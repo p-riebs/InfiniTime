@@ -56,7 +56,11 @@ RUN rm /tmp/nRF5_SDK_15.3.0_59ac345
 # McuBoot
 # RUN bash -c "source /opt/build.sh; GetMcuBoot;"
 RUN git clone https://github.com/mcu-tools/mcuboot.git
+RUN cd ./mcuboot && git checkout 9015a5d404c2c688166cab81067be53c860d98f4
 RUN pip3 install -r ./mcuboot/scripts/requirements.txt
+
+RUN apt-get update && apt-get install -y npm
+RUN npm i lv_font_conv -g
 
 RUN adduser infinitime
 
