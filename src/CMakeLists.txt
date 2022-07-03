@@ -403,6 +403,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/PassKey.cpp
         displayapp/screens/Error.cpp
         displayapp/screens/Alarm.cpp
+        displayapp/screens/AlarmClock.cpp
         displayapp/screens/Styles.cpp
         displayapp/Colors.cpp
         displayapp/widgets/Counter.cpp
@@ -475,6 +476,7 @@ list(APPEND SOURCE_FILES
         components/settings/Settings.cpp
         components/timer/TimerController.cpp
         components/alarm/AlarmController.cpp
+        components/alarmclock/AlarmClockController.cpp
         components/fs/FS.cpp
         drivers/Cst816s.cpp
         FreeRTOS/port.c
@@ -541,6 +543,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         components/settings/Settings.cpp
         components/timer/TimerController.cpp
         components/alarm/AlarmController.cpp
+        components/alarmclock/AlarmClockController.cpp
         drivers/Cst816s.cpp
         FreeRTOS/port.c
         FreeRTOS/port_cmsis_systick.c
@@ -615,6 +618,7 @@ set(INCLUDE_FILES
         displayapp/screens/Motion.h
         displayapp/screens/Timer.h
         displayapp/screens/Alarm.h
+        displayapp/screens/AlarmClock.h
         displayapp/Colors.h
         displayapp/widgets/Counter.h
         displayapp/widgets/PageIndicator.h
@@ -657,6 +661,7 @@ set(INCLUDE_FILES
         components/settings/Settings.h
         components/timer/TimerController.h
         components/alarm/AlarmController.h
+        components/alarmclock/AlarmClockController.h
         drivers/Cst816s.h
         FreeRTOS/portmacro.h
         FreeRTOS/portmacro_cmsis.h
