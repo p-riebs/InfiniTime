@@ -460,7 +460,7 @@ list(APPEND SOURCE_FILES
         components/ble/DfuService.cpp
         components/ble/CurrentTimeService.cpp
         components/ble/AlertNotificationService.cpp
-        components/ble/AlarmService.cpp
+        components/ble/AlarmClockService.cpp
         components/ble/MusicService.cpp
         components/ble/weather/WeatherService.cpp
         components/ble/NavigationService.cpp
@@ -527,7 +527,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         components/ble/DfuService.cpp
         components/ble/CurrentTimeService.cpp
         components/ble/AlertNotificationService.cpp
-        components/ble/AlarmService.cpp
+        components/ble/AlarmClockService.cpp
         components/ble/MusicService.cpp
         components/ble/weather/WeatherService.cpp
         components/ble/BatteryInformationService.cpp

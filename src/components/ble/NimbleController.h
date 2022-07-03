@@ -9,7 +9,7 @@
 #undef min
 #include "components/ble/AlertNotificationClient.h"
 #include "components/ble/AlertNotificationService.h"
-#include "components/ble/AlarmService.h"
+#include "components/ble/AlarmClockService.h"
 #include "components/ble/BatteryInformationService.h"
 #include "components/ble/CurrentTimeClient.h"
 #include "components/ble/CurrentTimeService.h"
@@ -67,13 +67,11 @@ namespace Pinetime {
       Pinetime::Controllers::AlertNotificationService& alertService() {
         return anService;
       };
-<<<<<<< HEAD
 
-=======
-      Pinetime::Controllers::AlarmService& alarmService() {
-        return alService;
+      Pinetime::Controllers::AlarmClockService& alarmClock() {
+        return alarmClockService;
       };
->>>>>>> 7a116da1 (Fixed up debugger. Added initial functionality for Alarm service (duplicate of AlertNotificationService))
+
       Pinetime::Controllers::WeatherService& weather() {
         return weatherService;
       };
@@ -103,7 +101,7 @@ namespace Pinetime {
       DeviceInformationService deviceInformationService;
       CurrentTimeClient currentTimeClient;
       AlertNotificationService anService;
-      AlarmService alService;
+      AlarmClockService alarmClockService;
       AlertNotificationClient alertNotificationClient;
       CurrentTimeService currentTimeService;
       MusicService musicService;
