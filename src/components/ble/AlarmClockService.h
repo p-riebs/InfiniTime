@@ -14,18 +14,16 @@ namespace Pinetime {
     class SystemTask;
   }
   namespace Controllers {
-    class NotificationManager;
+    class AlarmClockController;
 
     class AlarmClockService {
     public:
-      explicit AlarmClockService(Pinetime::System::SystemTask& systemTask);
+      explicit AlarmClockService(Pinetime::System::SystemTask& systemTask, Pinetime::Controllers::AlarmClockController& alarmClockController);
       void Init();
 
       int OnCommand(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt);
 
       void event(char event);
-
-      std::string getAlarmTime() const;
 
     private:
       struct ble_gatt_chr_def characteristicDefinition[3];
@@ -34,9 +32,7 @@ namespace Pinetime {
       uint16_t eventHandle {};
 
       Pinetime::System::SystemTask& m_system;
-
-      std::string alarmTime {"12:00"};
-      bool disable {false};
+      Pinetime::Controllers::AlarmClockController& alarmClockController;
     };
   }
 }

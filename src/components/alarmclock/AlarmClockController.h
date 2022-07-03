@@ -21,6 +21,7 @@
 #include <timers.h>
 #include <cstdint>
 #include "components/datetime/DateTimeController.h"
+#include "components/ble/AlarmClockService.h"
 
 namespace Pinetime {
   namespace System {
@@ -55,6 +56,7 @@ namespace Pinetime {
       void SetRecurrence(RecurType recurType) {
         recurrence = recurType;
       }
+      void SetService(Pinetime::Controllers::AlarmClockService* service);
 
     private:
       Controllers::DateTime& dateTimeController;
@@ -65,6 +67,7 @@ namespace Pinetime {
       std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> alarmTime;
       AlarmState state = AlarmState::Not_Set;
       RecurType recurrence = RecurType::None;
+      Pinetime::Controllers::AlarmClockService* service = nullptr;
     };
   }
 }

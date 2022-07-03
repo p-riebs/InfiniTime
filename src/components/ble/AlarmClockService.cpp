@@ -1,4 +1,5 @@
 #include "components/ble/AlarmClockService.h"
+#include "components/alarmclock/AlarmClockController.h"
 #include <cstring>
 #include "systemtask/SystemTask.h"
 
@@ -27,7 +28,8 @@ namespace {
 }
 
 
-Pinetime::Controllers::AlarmClockService::AlarmClockService(Pinetime::System::SystemTask& system): m_system(system) {
+Pinetime::Controllers::AlarmClockService::AlarmClockService(Pinetime::System::SystemTask& system, Pinetime::Controllers::AlarmClockController& alarmClockController)
+  : m_system(system), alarmClockController {alarmClockController} {
   characteristicDefinition[0] = {.uuid = &acsTimeCharUuid.u,
                                  .access_cb = AlarmClockCallback,
                                  .arg = this,
@@ -41,6 +43,8 @@ Pinetime::Controllers::AlarmClockService::AlarmClockService(Pinetime::System::Sy
 
   serviceDefinition[0] = {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = &acsUuid.u, .characteristics = characteristicDefinition};
   serviceDefinition[1] = {0};
+  // TODO refactor to prevent this loop dependency (service depends on controller and controller depends on service)
+  alarmClockController.SetService(this);
 }
 
 void Pinetime::Controllers::AlarmClockService::Init() {
@@ -63,25 +67,20 @@ int Pinetime::Controllers::AlarmClockService::OnCommand(uint16_t conn_handle, ui
     char data[bufferSize + 1];
     os_mbuf_copydata(ctxt->om, 0, bufferSize, data);
 
-    if (notifSize > bufferSize) {
-      data[bufferSize - 1] = '.';
-      data[bufferSize - 2] = '.';
-      data[bufferSize - 3] = '.';
-    }
     data[bufferSize] = '\0';
 
     char* s = &data[0];
     if (ble_uuid_cmp(ctxt->chr->uuid, &acsTimeCharUuid.u) == 0) {
-      alarmTime = s;
+      char* timeSplit = strtok(s, ":");
+      uint8_t hour = strtol(timeSplit, nullptr, 10);
+      timeSplit = strtok(NULL, " :");
+      uint8_t minute = strtol(timeSplit, nullptr, 10);
+      alarmClockController.SetAlarmTime(hour, minute);
     } else if (ble_uuid_cmp(ctxt->chr->uuid, &acsDisableCharUuid.u) == 0) {
-      disable = s[0];
+      alarmClockController.DisableAlarm();
     }
   }
   return 0;
-}
-
-std::string Pinetime::Controllers::AlarmClockService::getAlarmTime() const {
-  return alarmTime;
 }
 
 void Pinetime::Controllers::AlarmClockService::event(char event) {

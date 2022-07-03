@@ -127,6 +127,8 @@ AlarmClock::AlarmClock(DisplayApp* app,
   } else {
     SetSwitchState(LV_ANIM_OFF);
   }
+
+  taskRefresh = lv_task_create(RefreshTaskCallback, 1000, LV_TASK_PRIO_MID, this);
 }
 
 AlarmClock::~AlarmClock() {
@@ -134,6 +136,15 @@ AlarmClock::~AlarmClock() {
     StopAlerting();
   }
   lv_obj_clean(lv_scr_act());
+}
+
+void AlarmClock::Refresh() {
+  if (alarmMinutes != alarmClockController.Minutes()) {
+    alarmMinutes = alarmClockController.Minutes();
+  } else if (alarmHours != alarmClockController.Hours()) {
+    alarmHours = alarmClockController.Hours();
+  }
+  UpdateAlarmTime();
 }
 
 void AlarmClock::OnButtonEvent(lv_obj_t* obj, lv_event_t event) {

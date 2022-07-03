@@ -50,6 +50,7 @@ namespace Pinetime {
                        Pinetime::Drivers::SpiNorFlash& spiNorFlash,
                        HeartRateController& heartRateController,
                        MotionController& motionController,
+                       AlarmClockController& alarmClockController,
                        FS& fs);
       void Init();
       void StartAdvertising();

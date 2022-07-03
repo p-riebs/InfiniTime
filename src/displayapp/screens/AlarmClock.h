@@ -32,6 +32,9 @@ namespace Pinetime {
               Pinetime::Controllers::Settings& settingsController,
               System::SystemTask& systemTask);
         ~AlarmClock() override;
+
+        void Refresh() override;
+
         void SetAlerting();
         void OnButtonEvent(lv_obj_t* obj, lv_event_t event);
         bool OnButtonPushed() override;
@@ -50,6 +53,8 @@ namespace Pinetime {
         lv_obj_t* txtMessage = nullptr;
         lv_obj_t* btnMessage = nullptr;
         lv_task_t* taskStopAlarm = nullptr;
+
+        lv_task_t* taskRefresh;
 
         enum class EnableButtonState { On, Off, Alerting };
         void SetRecurButtonState();

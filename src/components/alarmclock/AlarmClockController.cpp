@@ -106,3 +106,7 @@ void AlarmClockController::StopAlerting() {
   }
   systemTask->PushMessage(System::Messages::StopRinging);
 }
+
+void AlarmClockController::SetService(Pinetime::Controllers::AlarmClockService* service) {
+  this->service = service;
+}
