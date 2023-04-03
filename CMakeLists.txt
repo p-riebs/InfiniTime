@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose Debug or Release")
 
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR ARM)
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
 project(pinetime VERSION 1.12.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_C_STANDARD 99)
