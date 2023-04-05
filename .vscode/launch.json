@@ -1,18 +1,18 @@
-  {
+{
     "version": "0.1.0",
     "configurations": [
         {
             "name": "Debug - Openocd docker Remote",
-            "type":"cortex-debug",
-            "cortex-debug.armToolchainPath":"${env:ARM_NONE_EABI_TOOLCHAIN_PATH}/bin",
+            "type": "cortex-debug",
+            "cortex-debug.armToolchainPath": "/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/bin",
             "cwd": "${workspaceRoot}",
             "executable": "${command:cmake.launchTargetPath}",
             "request": "launch",
             "servertype": "external",
             // This may need to be arm-none-eabi-gdb depending on your system
-            "gdbPath" : "${env:ARM_NONE_EABI_TOOLCHAIN_PATH}/bin/arm-none-eabi-gdb",
+            "gdbPath": "/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/bin/arm-none-eabi-gdb",
             // Connect to an already running OpenOCD instance
-            "gdbTarget": "host.docker.internal:3333",
+            "gdbTarget": "127.0.0.1:3333",
             "svdFile": "${workspaceRoot}/nrf52.svd",
             "runToMain": true,
             // Work around for stopping at main on restart
@@ -23,29 +23,34 @@
         },
         {
             "name": "Debug - Openocd Local",
-            "type":"cortex-debug",
-            "cortex-debug.armToolchainPath":"${env:ARM_NONE_EABI_TOOLCHAIN_PATH}/bin",
+            "type": "cortex-debug",
+            "cortex-debug.armToolchainPath": "/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/bin",
             "cwd": "${workspaceRoot}",
             "executable": "${command:cmake.launchTargetPath}",
             "request": "launch",
             "servertype": "openocd",
             // This may need to be arm-none-eabi-gdb depending on your system
-            "gdbPath" : "${env:ARM_NONE_EABI_TOOLCHAIN_PATH}/bin/arm-none-eabi-gdb",
+            "gdbPath": "/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/bin/arm-none-eabi-gdb",
             // Connect to an already running OpenOCD instance
-            "gdbTarget": "localhost:3333",
+            "gdbTarget": "127.0.0.1:3333",
             "svdFile": "${workspaceRoot}/nrf52.svd",
             "runToMain": true,
+            "showDevDebugOutput": "raw",
             // Work around for stopping at main on restart
             "postRestartCommands": [
                 "break main",
                 "continue"
-            ]
+            ],
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/nrf52.cfg"
+            ],
         },
         {
             "cwd": "${workspaceRoot}",
             // TODO: find better way to get latest build filename
-            "executable": "./build/src/pinetime-app-1.3.0.out",
-            "name": "Debug OpenOCD ST-LINK pinetime-app-1.3.0.out",
+            "executable": "./build/src/pinetime-app-1.12.0.out",
+            "name": "Debug OpenOCD ST-LINK pinetime-app-1.12.0.out",
             "request": "launch",
             "type": "cortex-debug",
             "showDevDebugOutput": false,
@@ -59,6 +64,5 @@
                 "target/nrf52.cfg"
             ],
         }
-
     ]
 }

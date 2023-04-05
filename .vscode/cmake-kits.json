@@ -1,0 +1,10 @@
+[
+  {
+    "name": "GCC 10.3.1 arm-none-eabi w/ Python venv",
+    "compilers": {
+      "C": "/opt/homebrew/bin/arm-none-eabi-gcc",
+      "CXX": "/opt/homebrew/bin/arm-none-eabi-g++"
+    },
+    "environmentSetupScript": "/Users/parker/.virtualenvs/infinitime/bin/activate"
+  }
+]

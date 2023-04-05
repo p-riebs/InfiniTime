@@ -1,8 +1,8 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureArgs": [
-        "-DARM_NONE_EABI_TOOLCHAIN_PATH=${env:ARM_NONE_EABI_TOOLCHAIN_PATH}",
-        "-DNRF5_SDK_PATH=${env:NRF5_SDK_PATH}",
+        "-DARM_NONE_EABI_TOOLCHAIN_PATH=/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/",
+        "-DNRF5_SDK_PATH=/Users/parker/projects/InfiniTime/nRF5_SDK_15.3.0_59ac345/",
     ],
     "cmake.generator": "Unix Makefiles",
     "clang-tidy.buildPath": "build/compile_commands.json",
@@ -55,5 +55,7 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "git.ignoreLimitWarning": true,
+    "cmake.configureOnOpen": true
 }
