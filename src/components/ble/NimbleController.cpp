@@ -226,6 +226,7 @@ int NimbleController::OnGAPEvent(ble_gap_event* event) {
       connectionHandle = BLE_HS_CONN_HANDLE_NONE;
       if (bleController.IsConnected()) {
         bleController.Disconnect();
+        systemTask.PushMessage(Pinetime::System::Messages::BleDisconnected);
         fastAdvCount = 0;
         StartAdvertising();
       }

@@ -212,7 +212,7 @@ void SystemTask::Work() {
           spiNorFlash.Wakeup();
 
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::GoToRunning);
-          heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::WakeUp);
+          //heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::WakeUp);
 
           if (bleController.IsRadioEnabled() && !bleController.IsConnected()) {
             nimbleController.RestartFastAdv();
@@ -241,7 +241,7 @@ void SystemTask::Work() {
           state = SystemTaskState::GoingToSleep; // Already set in PushMessage()
           NRF_LOG_INFO("[systemtask] Going to sleep");
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::GoToSleep);
-          heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::GoToSleep);
+          //heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::GoToSleep);
           break;
         case Messages::OnNewTime:
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::RestoreBrightness);
@@ -276,6 +276,9 @@ void SystemTask::Work() {
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::RestoreBrightness);
           isBleDiscoveryTimerRunning = true;
           bleDiscoveryTimer = 5;
+          break;
+        case Messages::BleDisconnected:
+            heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::StopMeasurement);
           break;
         case Messages::BleFirmwareUpdateStarted:
           doNotGoToSleep = true;
@@ -371,6 +374,9 @@ void SystemTask::Work() {
           break;
         case Messages::OnChargingEvent:
           batteryController.ReadPowerState();
+          if(batteryController.IsPowerPresent()) {
+            heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::StopMeasurement);
+          }
           displayApp.PushMessage(Applications::Display::Messages::OnChargingEvent);
           if (state == SystemTaskState::Sleeping) {
             GoToRunning();
