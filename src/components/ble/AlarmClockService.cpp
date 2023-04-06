@@ -18,27 +18,28 @@ namespace {
   constexpr ble_uuid128_t acsUuid {BaseUuid()};
 
   constexpr ble_uuid128_t acsTimeCharUuid {CharUuid(0x01, 0x00)};
-  constexpr ble_uuid128_t acsDisableCharUuid {CharUuid(0x2, 0x00)};
+  constexpr ble_uuid128_t acsDisableCharUuid {CharUuid(0x02, 0x00)};
 
   constexpr uint8_t MaxStringSize {40};
 
-  int AlarmClockCallback(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt, void* arg) {
-    return static_cast<Pinetime::Controllers::AlarmClockService*>(arg)->OnCommand(conn_handle, attr_handle, ctxt);
+  int AlarmClockCallback(uint16_t /*conn_handle*/, uint16_t /*attr_handle*/, struct ble_gatt_access_ctxt* ctxt, void* arg) {
+    return static_cast<Pinetime::Controllers::AlarmClockService*>(arg)->OnCommand(ctxt);
   }
 }
 
 
-Pinetime::Controllers::AlarmClockService::AlarmClockService(Pinetime::System::SystemTask& system, Pinetime::Controllers::AlarmClockController& alarmClockController)
+Pinetime::Controllers::AlarmClockService::AlarmClockService(Pinetime::System::SystemTask& system, 
+                                                            Pinetime::Controllers::AlarmClockController& alarmClockController)
   : m_system(system), alarmClockController {alarmClockController} {
   characteristicDefinition[0] = {.uuid = &acsTimeCharUuid.u,
                                  .access_cb = AlarmClockCallback,
                                  .arg = this,
-                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
+                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY,
+                                 .val_handle = &alarmClockTimeHandle};
   characteristicDefinition[1] = {.uuid = &acsDisableCharUuid.u,
                                  .access_cb = AlarmClockCallback,
                                  .arg = this,
                                  .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-
   characteristicDefinition[2] = {0};
 
   serviceDefinition[0] = {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = &acsUuid.u, .characteristics = characteristicDefinition};
@@ -56,7 +57,7 @@ void Pinetime::Controllers::AlarmClockService::Init() {
   ASSERT(res == 0);
 }
 
-int Pinetime::Controllers::AlarmClockService::OnCommand(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt) {
+int Pinetime::Controllers::AlarmClockService::OnCommand(struct ble_gatt_access_ctxt* ctxt) {
   if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
     size_t notifSize = OS_MBUF_PKTLEN(ctxt->om);
     size_t bufferSize = notifSize;
@@ -79,12 +80,21 @@ int Pinetime::Controllers::AlarmClockService::OnCommand(uint16_t conn_handle, ui
     } else if (ble_uuid_cmp(ctxt->chr->uuid, &acsDisableCharUuid.u) == 0) {
       alarmClockController.DisableAlarm();
     }
+  } else if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+    if (ble_uuid_cmp(ctxt->chr->uuid, &acsTimeCharUuid.u) == 0) {
+      uint8_t buffer[2] = {alarmClockController.Hours(), alarmClockController.Minutes()};
+
+      int res = os_mbuf_append(ctxt->om, &buffer, sizeof(buffer));
+      return (res == 0) ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    } else if (ble_uuid_cmp(ctxt->chr->uuid, &acsDisableCharUuid.u) == 0) {
+    }
   }
   return 0;
 }
 
-void Pinetime::Controllers::AlarmClockService::event(char event) {
-  auto* om = ble_hs_mbuf_from_flat(&event, 1);
+void Pinetime::Controllers::AlarmClockService::OnAlarmTimeChange(uint8_t hours, uint8_t minutes) {
+  uint8_t buffer[2] = {hours, minutes};
+  auto* om = ble_hs_mbuf_from_flat(buffer, 2);
 
   uint16_t connectionHandle = m_system.nimble().connHandle();
 
@@ -92,5 +102,5 @@ void Pinetime::Controllers::AlarmClockService::event(char event) {
     return;
   }
 
-  ble_gattc_notify_custom(connectionHandle, eventHandle, om);
+  ble_gattc_notify_custom(connectionHandle, alarmClockTimeHandle, om);
 }

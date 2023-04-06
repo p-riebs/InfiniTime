@@ -80,9 +80,11 @@ void AlarmClockController::ScheduleAlarm() {
   xTimerStart(alarmTimer, 0);
 
   state = AlarmState::Set;
+
+  service->OnAlarmTimeChange(hours, minutes);
 }
 
-uint32_t AlarmClockController::SecondsToAlarm() {
+uint32_t AlarmClockController::SecondsToAlarm() const {
   return std::chrono::duration_cast<std::chrono::seconds>(alarmTime - dateTimeController.CurrentDateTime()).count();
 }
 
@@ -104,7 +106,6 @@ void AlarmClockController::StopAlerting() {
     // set next instance
     ScheduleAlarm();
   }
-  systemTask->PushMessage(System::Messages::StopRinging);
 }
 
 void AlarmClockController::SetService(Pinetime::Controllers::AlarmClockService* service) {

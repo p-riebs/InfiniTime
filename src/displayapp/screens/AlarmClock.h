@@ -21,35 +21,32 @@
 #include "systemtask/SystemTask.h"
 #include "displayapp/LittleVgl.h"
 #include "components/alarmclock/AlarmClockController.h"
+#include "displayapp/widgets/Counter.h"
 
 namespace Pinetime {
   namespace Applications {
     namespace Screens {
       class AlarmClock : public Screen {
       public:
-        AlarmClock(DisplayApp* app,
-              Controllers::AlarmClockController& alarmClockController,
-              Pinetime::Controllers::Settings& settingsController,
-              System::SystemTask& systemTask);
+        AlarmClock(Controllers::AlarmClockController& alarmClockController,
+              Controllers::Settings::ClockType clockType,
+              System::SystemTask& systemTask,
+              Controllers::MotorController& motorController);
         ~AlarmClock() override;
-
-        void Refresh() override;
-
         void SetAlerting();
         void OnButtonEvent(lv_obj_t* obj, lv_event_t event);
         bool OnButtonPushed() override;
         bool OnTouchEvent(TouchEvents event) override;
+        void OnValueChanged();
         void StopAlerting();
 
       private:
-        uint8_t alarmHours;
-        uint8_t alarmMinutes;
         Controllers::AlarmClockController& alarmClockController;
-        Controllers::Settings& settingsController;
         System::SystemTask& systemTask;
+        Controllers::MotorController& motorController;
 
-        lv_obj_t *time, *lblampm, *btnStop, *txtStop, *btnMinutesUp, *btnMinutesDown, *btnHoursUp, *btnHoursDown, *txtMinUp, *txtMinDown,
-          *txtHrUp, *txtHrDown, *btnRecur, *txtRecur, *btnInfo, *txtInfo, *enableSwitch;
+        lv_obj_t *btnStop, *txtStop, *btnRecur, *txtRecur, *btnInfo, *enableSwitch;
+        lv_obj_t* lblampm = nullptr;
         lv_obj_t* txtMessage = nullptr;
         lv_obj_t* btnMessage = nullptr;
         lv_task_t* taskStopAlarm = nullptr;
@@ -57,6 +54,7 @@ namespace Pinetime {
         lv_task_t* taskRefresh;
 
         enum class EnableButtonState { On, Off, Alerting };
+        void DisableAlarm();
         void SetRecurButtonState();
         void SetSwitchState(lv_anim_enable_t anim);
         void SetAlarm();
@@ -64,6 +62,8 @@ namespace Pinetime {
         void HideInfo();
         void ToggleRecurrence();
         void UpdateAlarmTime();
+        Widgets::Counter hourCounter = Widgets::Counter(0, 23, jetbrains_mono_76);
+        Widgets::Counter minuteCounter = Widgets::Counter(0, 59, jetbrains_mono_76);
       };
     };
   };

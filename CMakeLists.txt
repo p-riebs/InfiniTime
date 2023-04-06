@@ -23,17 +23,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 set(NRF_TARGET "nrf52")
 
-#if (NOT ARM_NONE_EABI_TOOLCHAIN_PATH)
-#  message(FATAL_ERROR "The path to the toolchain (arm-none-eabi) must be specified on the command line (add -DARM_NONE_EABI_TOOLCHAIN_PATH=<path>")
-#endif ()
+if (NOT ARM_NONE_EABI_TOOLCHAIN_PATH)
+  message(FATAL_ERROR "The path to the toolchain (arm-none-eabi) must be specified on the command line (add -DARM_NONE_EABI_TOOLCHAIN_PATH=<path>")
+endif ()
 
-set(ARM_NONE_EABI_TOOLCHAIN_PATH "/opt/gcc-arm-none-eabi-9-2020-q2-update")
-
-#if (NOT NRF5_SDK_PATH)
-#  message(FATAL_ERROR "The path to the NRF52 SDK must be specified on the command line (add -DNRF5_SDK_PATH=<path>")
-#endif ()
-
-set(NRF5_SDK_PATH "/opt/nRF5_SDK_15.3.0_59ac345")
+if (NOT NRF5_SDK_PATH)
+  message(FATAL_ERROR "The path to the NRF52 SDK must be specified on the command line (add -DNRF5_SDK_PATH=<path>")
+endif ()
 
 if(BUILD_DFU)
   set(BUILD_DFU true)
