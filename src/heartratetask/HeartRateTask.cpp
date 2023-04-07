@@ -45,7 +45,6 @@ void HeartRateTask::Work() {
             break;
           }
           StopMeasurement();
-          state = States::Idle;
           measurementStarted = false;
           controller.Update(Controllers::HeartRateController::States::Stopped, 0);
           break;

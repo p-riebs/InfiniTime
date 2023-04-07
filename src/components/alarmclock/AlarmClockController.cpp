@@ -82,6 +82,7 @@ void AlarmClockController::ScheduleAlarm() {
   state = AlarmState::Set;
 
   service->OnAlarmTimeChange(hours, minutes);
+  service->OnAlarmStateChange();
 }
 
 uint32_t AlarmClockController::SecondsToAlarm() const {
@@ -91,11 +92,13 @@ uint32_t AlarmClockController::SecondsToAlarm() const {
 void AlarmClockController::DisableAlarm() {
   xTimerStop(alarmTimer, 0);
   state = AlarmState::Not_Set;
+  service->OnAlarmStateChange();
 }
 
 void AlarmClockController::SetOffAlarmNow() {
   state = AlarmState::Alerting;
   systemTask->PushMessage(System::Messages::SetOffAlarm);
+  service->OnAlarmStateChange();
 }
 
 void AlarmClockController::StopAlerting() {
@@ -106,6 +109,7 @@ void AlarmClockController::StopAlerting() {
     // set next instance
     ScheduleAlarm();
   }
+  service->OnAlarmStateChange();
 }
 
 void AlarmClockController::SetService(Pinetime::Controllers::AlarmClockService* service) {

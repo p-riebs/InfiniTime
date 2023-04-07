@@ -21,15 +21,18 @@ namespace Pinetime {
       explicit AlarmClockService(Pinetime::System::SystemTask& systemTask, Pinetime::Controllers::AlarmClockController& alarmClockController);
       void Init();
 
-      int OnCommand(struct ble_gatt_access_ctxt* ctxt);
+      int OnAlarmClockTime(struct ble_gatt_access_ctxt* ctxt);
+      int OnAlarmClockState(struct ble_gatt_access_ctxt* ctxt);
 
       void OnAlarmTimeChange(uint8_t hours, uint8_t minutes);
+      void OnAlarmStateChange();
 
     private:
       struct ble_gatt_chr_def characteristicDefinition[3];
       struct ble_gatt_svc_def serviceDefinition[2];
 
       uint16_t alarmClockTimeHandle {};
+      uint16_t alarmClockStateHandle {};
 
       Pinetime::System::SystemTask& m_system;
       Pinetime::Controllers::AlarmClockController& alarmClockController;
