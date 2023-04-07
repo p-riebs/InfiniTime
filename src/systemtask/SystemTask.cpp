@@ -278,7 +278,7 @@ void SystemTask::Work() {
           bleDiscoveryTimer = 5;
           break;
         case Messages::BleDisconnected:
-            heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::StopMeasurement);
+          heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::GoToSleep);
           break;
         case Messages::BleFirmwareUpdateStarted:
           doNotGoToSleep = true;
@@ -375,7 +375,7 @@ void SystemTask::Work() {
         case Messages::OnChargingEvent:
           batteryController.ReadPowerState();
           if(batteryController.IsPowerPresent()) {
-            heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::StopMeasurement);
+            heartRateApp.PushMessage(Pinetime::Applications::HeartRateTask::Messages::GoToSleep);
           }
           displayApp.PushMessage(Applications::Display::Messages::OnChargingEvent);
           if (state == SystemTaskState::Sleeping) {
